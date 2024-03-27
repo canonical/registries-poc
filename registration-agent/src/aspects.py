@@ -37,7 +37,7 @@ def set_aspect(
 def unset_aspect(name: str, *, fields: Optional[list[str]] = None) -> None:
     """Unset an aspect (or a subset)."""
     if fields is None:
-        fields = get_aspect(name).keys()
+        fields = [*get_aspect(name).keys()]
 
     try:
         set_aspect(name, dict.fromkeys(fields, None))

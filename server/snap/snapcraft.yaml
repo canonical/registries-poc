@@ -26,5 +26,3 @@ parts:
     source: .
     parse-info:
       - setup.py
-    python-requirements:
-      - requirements.txt
