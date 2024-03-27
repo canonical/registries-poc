@@ -74,3 +74,33 @@ clean-all:
 	@$(call clean, "follower")
 	@$(call clean, "registration-agent")
 	@$(call clean, "server")
+
+
+# TESTING
+
+.PHONY: format
+format:
+	ruff format .
+
+.PHONY: check
+check:
+	ruff check . && \
+	mypy follower/ && mypy registration-agent/ && mypy server/
+
+.PHONY: depends
+depends:
+	# since we're housing multiple related snaps in the same repository,
+	# make sure that requirements don't conflict across the snaps
+	pip install -e follower && \
+	pip install -e registration-agent && \
+	pip install -e server && \
+	pip install -r test-requirements.txt
+
+.PHONY: test
+test:
+	# test each component individually and combine the coverage results
+	COVERAGE_FILE=.coverage_follower pytest --cov=follower follower/tests
+	COVERAGE_FILE=.coverage_agent pytest --cov=registration-agent registration-agent/tests
+	COVERAGE_FILE=.coverage_server pytest --cov=server server/tests
+	coverage combine --keep .coverage_*
+	coverage report --precision=1 --show-missing --skip-empty

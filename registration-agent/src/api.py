@@ -7,6 +7,10 @@ from src.aspects import get_aspect, set_aspect, unset_aspect
 from src.device import generate_keys, get_architecture, get_ip_address
 
 
+class HttpException(Exception):
+    pass
+
+
 def _map_snap_config(snap_config: dict):
     """Map snap config to a format that can be stored in aspects."""
     # replace _ in the snap names with - to
@@ -20,13 +24,9 @@ def _make_request(
     data: Optional[dict] = None,
 ) -> requests.Response:
     """Make a HTTP request."""
-    arguments = {"method": method, "url": url}
-    if data is not None:
-        arguments["json"] = data
-
-    response = requests.request(**arguments)
+    response = requests.request(method, url, json=data)
     if response.status_code >= 400:
-        raise Exception(response.status_code, response.text)
+        raise HttpException(response.status_code, response.text)
 
     return response
 

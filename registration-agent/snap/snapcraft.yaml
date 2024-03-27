@@ -30,7 +30,3 @@ parts:
     source: .
     parse-info:
       - setup.py
-    python-packages:
-      - snap-http==1.4.0
-      - requests==2.31.0
-      - cryptography==42.0.5

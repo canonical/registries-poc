@@ -15,7 +15,9 @@ def get_target_config() -> schemas.Config:
     return db.get_target_config()
 
 
-def register(ip_address: str, public_key_rsa: str, arch: str) -> schemas.RegisterResponse:
+def register(
+    ip_address: str, public_key_rsa: str, arch: str
+) -> schemas.RegisterResponse:
     registration_uuid = uuid.uuid4()
     registered_at = int(datetime.now().timestamp())
     state = schemas.State(
@@ -23,7 +25,7 @@ def register(ip_address: str, public_key_rsa: str, arch: str) -> schemas.Registe
         ip_address=ip_address,
         public_key_rsa=public_key_rsa,
         arch=arch,
-        config=EMPTY_CONFIG.config
+        config=EMPTY_CONFIG.config,
     )
     db.create_state(registration_uuid, state)
     return schemas.RegisterResponse(
@@ -31,7 +33,7 @@ def register(ip_address: str, public_key_rsa: str, arch: str) -> schemas.Registe
         registered=registered_at,
         ip_address=ip_address,
         public_key_rsa=public_key_rsa,
-        arch=arch
+        arch=arch,
     )
 
 
@@ -39,11 +41,14 @@ def is_registered(registration_uuid: uuid.UUID) -> bool:
     return db.is_registered(registration_uuid)
 
 
-def poll(registration_uuid: uuid.UUID, config: ConfigDict) -> Optional[schemas.PollResponse]:
+def poll(
+    registration_uuid: uuid.UUID, config: ConfigDict
+) -> Optional[schemas.PollResponse]:
     _update_state(registration_uuid, config)
     target_config = db.get_target_config()
     if not _is_config_matching_target(config, target_config.config):
         return schemas.PollResponse(config=target_config.config)
+    return None
 
 
 def _update_state(registration_uuid: uuid.UUID, config: ConfigDict) -> None:

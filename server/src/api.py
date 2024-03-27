@@ -52,7 +52,7 @@ async def register(
 )
 async def poll(poll_request: schemas.PollRequest) -> PollResponse | Response:
     if not logic.is_registered(poll_request.uuid):
-        raise HTTPException(status_code=400, detail=f"Agent not registered")
+        raise HTTPException(status_code=400, detail="Agent not registered")
     rsp = logic.poll(poll_request.uuid, poll_request.config)
     if rsp is None:
         return Response(status_code=204)
@@ -72,6 +72,6 @@ async def poll(poll_request: schemas.PollRequest) -> PollResponse | Response:
 )
 async def get_state(registration_uuid: uuid.UUID) -> schemas.State:
     if not logic.is_registered(registration_uuid):
-        raise HTTPException(status_code=400, detail=f"Agent registration not found")
+        raise HTTPException(status_code=400, detail="Agent registration not found")
     rsp = logic.get_state(registration_uuid)
     return rsp
