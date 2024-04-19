@@ -1,3 +1,10 @@
+# since we're housing multiple related snaps in the same repository,
+# make sure that requirements don't conflict across the snaps
+-e control
+-e reporting
+-e server
+-e vpn
+
 mypy==1.9.0
 pytest==8.1.1
 pytest-cov==5.0.0

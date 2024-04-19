@@ -10,23 +10,28 @@ define build
 	snapcraft --debug
 endef
 
-.PHONY: follower
+.PHONY: control
 .ONESHELL:
-follower:
-	@$(call build, "follower")
+control:
+	@$(call build, "control")
 
-.PHONY: registration-agent
+.PHONY: reporting
 .ONESHELL:
-registration-agent:
-	@$(call build, "registration-agent")
+reporting:
+	@$(call build, "reporting")
 
 .PHONY: server
 .ONESHELL:
 server:
 	@$(call build, "server")
 
+.PHONY: vpn
+.ONESHELL:
+vpn:
+	@$(call build, "vpn")
+
 .PHONY: all
-all: follower registration-agent server
+all: control reporting server vpn
 
 .DEFAULT_GOAL := all
 
@@ -41,39 +46,45 @@ define install
     $(eval $@_SNAP = $(1))
 	@echo "Installing ${$@_SNAP} snap..."
 	$(eval VERSION=$(shell yq ".version" ${$@_SNAP}/snap/snapcraft.yaml))
-	sudo snap install --devmode ${$@_SNAP}/aspects-${$@_SNAP}_$(VERSION)_amd64.snap
-	snap connections aspects-${$@_SNAP} | awk '{print $$2}' | tail -n +2 | xargs -I {} sudo snap connect {}
+	sudo snap install --devmode ${$@_SNAP}/aspects-poc-${$@_SNAP}_$(VERSION)_amd64.snap
+	snap connections aspects-poc-${$@_SNAP} | awk '{print $$2}' | \
+		tail -n +2 | xargs -I {} sudo snap connect {}
 endef
 
-.PHONY: install-follower
-install-follower:
-	@$(call install, "follower")
+.PHONY: install-control
+install-control:
+	@$(call install, "control")
 
-.PHONY: install-registration-agent
-install-registration-agent:
-	@$(call install, "registration-agent")
+.PHONY: install-reporting
+install-reporting:
+	@$(call install, "reporting")
 
 .PHONY: install-server
 install-server:
 	@$(call install, "server")
 
+.PHONY: install-vpn
+install-vpn:
+	@$(call install, "vpn")
+
 .PHONY: install-all
-install-all: install-follower install-registration-agent install-server
+install-all: install-server install-control install-vpn install-reporting
 
 
 # CLEAN UP
 
 define clean
 	$(eval $@_SNAP = $(1))
-	sudo snap remove aspects-${$@_SNAP}
+	sudo snap remove aspects-poc-${$@_SNAP}
 	rm ${$@_SNAP}/*.snap
 endef
 
 .PHONY: clean-all
 clean-all:
-	@$(call clean, "follower")
-	@$(call clean, "registration-agent")
+	@$(call clean, "control")
+	@$(call clean, "reporting")
 	@$(call clean, "server")
+	@$(call clean, "vpn")
 
 
 # TESTING
@@ -85,22 +96,19 @@ format:
 .PHONY: check
 check:
 	ruff check . && \
-	mypy follower/ && mypy registration-agent/ && mypy server/
+	mypy control/ && mypy reporting/ && mypy server/ && mypy vpn/
 
 .PHONY: depends
 depends:
-	# since we're housing multiple related snaps in the same repository,
-	# make sure that requirements don't conflict across the snaps
-	pip install -e follower && \
-	pip install -e registration-agent && \
-	pip install -e server && \
 	pip install -r test-requirements.txt
 
 .PHONY: test
 test:
 	# test each component individually and combine the coverage results
-	COVERAGE_FILE=.coverage_follower pytest --cov=follower follower/tests
-	COVERAGE_FILE=.coverage_agent pytest --cov=registration-agent registration-agent/tests
+	COVERAGE_FILE=.coverage_control pytest --cov=control control/tests
+	COVERAGE_FILE=.coverage_reporting pytest --cov=reporting reporting/tests
 	COVERAGE_FILE=.coverage_server pytest --cov=server server/tests
+	COVERAGE_FILE=.coverage_vpn pytest --cov=vpn vpn/tests
 	coverage combine --keep .coverage_*
 	coverage report --precision=1 --show-missing --skip-empty
+	rm .coverage_*
