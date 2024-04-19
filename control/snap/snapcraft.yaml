@@ -1,4 +1,4 @@
-name: aspects-registration-agent
+name: aspects-poc-control
 base: core22
 version: "0.1"
 license: GPL-2.0-only
@@ -15,17 +15,12 @@ environment:
 
 apps:
   daemon:
-    command: bin/registration-agent-cli
+    command: bin/control-cli
     daemon: oneshot
     timer: 00:00-24:00/1440  # every minute
-    # commented since snapd-control is a superprivileged plugin that requires
-    # manual review by the store, install as devmode
-    plugs:
-      - network
-      # - snapd-control
 
 parts:
-  registration-agent:
+  control:
     plugin: python
     source: .
     parse-info:

@@ -1,11 +1,11 @@
-name: aspects-follower
+name: aspects-poc-reporting
 base: core22
 version: "0.1"
 license: GPL-2.0-only
 summary: Snap that consumes aspects config.
 description: |
-  This snap is functionally empty, it only watches for changes in
-  the config and logs them out to stdout.
+  This snap collects metrics from the device and reports them
+  every minute.
 
 grade: devel
 confinement: devmode
@@ -15,17 +15,15 @@ environment:
 
 apps:
   daemon:
-    command: bin/follower-cli
+    command: bin/reporter-cli
     daemon: oneshot
     timer: 00:00-24:00/1440  # every minute
-    # commented since snapd-control is a superprivileged plugin that requires
-    # manual review by the store, install as devmode
-    # plugs:
-    #   - snapd-control
 
 parts:
-  follower:
+  reporter:
     plugin: python
     source: .
     parse-info:
       - setup.py
+    python-packages:
+      - snap-http==1.4.0

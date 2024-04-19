@@ -1,4 +1,4 @@
-name: aspects-server
+name: aspects-poc-server
 base: core22
 version: "0.1"
 license: GPL-2.0-only

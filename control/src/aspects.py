@@ -13,7 +13,7 @@ def get_aspect(name: str, *, fields: Optional[list[str]] = None) -> dict:
     try:
         account_id = os.environ["ACCOUNT_ID"]
         response = get(
-            f"/aspects/{account_id}/aspects-poc/{name}",
+            f"/aspects/{account_id}/aspects-poc-v2/{name}",
             query_params=query_params,
         )
         return response.result
@@ -29,19 +29,6 @@ def set_aspect(
     """Set the aspect values."""
     account_id = os.environ["ACCOUNT_ID"]
     put(
-        f"/aspects/{account_id}/aspects-poc/{name}",
+        f"/aspects/{account_id}/aspects-poc-v2/{name}",
         value,
     )
-
-
-def unset_aspect(name: str, *, fields: Optional[list[str]] = None) -> None:
-    """Unset an aspect (or a subset)."""
-    if fields is None:
-        fields = [*get_aspect(name).keys()]
-
-    try:
-        set_aspect(name, dict.fromkeys(fields, None))
-    except SnapdHttpException:
-        # the aspect does not exist
-        # removing non-existent aspects will cause errors
-        pass

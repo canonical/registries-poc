@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+
+from src.aspects import set_aspect
+
+# interfaces
+set_aspect(
+    "write-interfaces",
+    {
+        "config.wlan0": {
+            "interface-type": "wifi",
+            "ip-address": "192.168.0.104",
+        },
+    },
+)
+set_aspect(
+    "write-interfaces",
+    {"stats.wlan0": {"n-sent": 0, "n-received": 0}},
+)
+
+set_aspect(
+    "write-interfaces",
+    {
+        "config.eth0": {
+            "interface-type": "ethernet",
+            "ip-address": "172.16.0.3",
+        }
+    },
+)
+set_aspect(
+    "write-interfaces",
+    {"stats.eth0": {"n-sent": 0, "n-received": 0}},
+)
+
+# tunnel
+set_aspect(
+    "setup-tunnel",
+    {
+        "interface": "eth0",
+        "secret-key": "some-secret-key",
+        "peers": ["192.168.21.3", "192.168.21.5", "192.168.21.7"],
+    },
+)
+
+# metrics collection
+set_aspect(
+    "setup-metrics",
+    {
+        "sample-rate": 2,
+        "monitor-packets-sent": True,
+        "monitor-packets-received": False,
+        "monitor-peers": True,
+    },
+)

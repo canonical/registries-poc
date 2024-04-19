@@ -1,0 +1,27 @@
+name: aspects-poc-vpn
+base: core22
+version: "0.1"
+license: GPL-2.0-only
+summary: Snap that consumes aspects config.
+description: |
+  This snap is functionally empty, it only watches for changes in
+  the config and logs them out to stdout.
+
+grade: devel
+confinement: devmode
+
+environment:
+  ACCOUNT_ID: f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN
+
+apps:
+  daemon:
+    command: bin/vpn-cli
+    daemon: oneshot
+    timer: 00:00-24:00/1440  # every minute
+
+parts:
+  vpn:
+    plugin: python
+    source: .
+    parse-info:
+      - setup.py
