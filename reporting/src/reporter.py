@@ -1,11 +1,22 @@
+import logging
 from pprint import pformat
 from textwrap import indent
+from time import sleep
 
 from src.aspects import get_aspect
 
+logging.root.setLevel(logging.DEBUG)
+
+# sample rate per minute,
+# default = 1, updated based on setup-metrics.sample-rate
+sample_rate = 1
+
 
 def collect() -> None:
+    global sample_rate
+
     settings = get_aspect("setup-metrics")
+    sample_rate = settings["sample-rate"]
 
     report = {}
     device_info = get_aspect("read-device")
@@ -22,6 +33,15 @@ def collect() -> None:
     if settings["monitor-peers"]:
         report["tunnel-peers"] = get_aspect("observe-tunnel")["peers"]
 
-    print("The network stats are:")
+    logging.info("The network stats are:")
     pretty = pformat(report)
-    print(indent(pretty, prefix="\t"))
+    logging.info(indent(pretty, prefix="\t"))
+
+
+def main() -> None:
+    while True:
+        collect()
+
+        beat = 60 / sample_rate
+        logging.info(f"Next run in {beat:.2f} seconds")
+        sleep(beat)
