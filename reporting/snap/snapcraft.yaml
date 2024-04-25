@@ -5,7 +5,7 @@ license: GPL-2.0-only
 summary: Snap that consumes aspects config.
 description: |
   This snap collects metrics from the device and reports them
-  every minute.
+  on a cadence.
 
 grade: devel
 confinement: devmode
@@ -16,8 +16,7 @@ environment:
 apps:
   daemon:
     command: bin/reporter-cli
-    daemon: oneshot
-    timer: 00:00-24:00/1440  # every minute
+    daemon: simple
 
 parts:
   reporter:

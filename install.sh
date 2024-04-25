@@ -5,6 +5,10 @@ SIGNING_PUBLIC_KEY=xkd_Y2ay5N2Uo14v_wsCtfVJYLAVbJgxbiKM8Ne4mZBflaROriZgk2nb5i9Oe
 CHANNEL=edge
 
 
+# Enable aspects-based configuration
+sudo snap set system experimental.aspects-configuration=true
+
+
 # Ack the assertions
 echo "Acknowledging account/$ACCOUNT_ID assertion..."
 snap known --remote account account-id=$ACCOUNT_ID | snap ack /dev/stdin
@@ -12,12 +16,8 @@ snap known --remote account account-id=$ACCOUNT_ID | snap ack /dev/stdin
 echo "Acknowledging account-key/$SIGNING_PUBLIC_KEY assertion..."
 snap known --remote account-key public-key-sha3-384=$SIGNING_PUBLIC_KEY | snap ack /dev/stdin
 
-echo "Acknowledging aspect-bundle/aspects-poc assertion..."
-curl -fsSL https://raw.githubusercontent.com/canonical/aspects-poc/main/aspects/v2/aspects-poc.aspect-bundle | snap ack /dev/stdin
-
-
-# Enable aspects-based configuration
-sudo snap set system experimental.aspects-configuration=true
+echo "Acknowledging aspect-bundle/aspects-poc-v2 assertion..."
+curl -fsSL https://raw.githubusercontent.com/canonical/aspects-poc/main/aspects/aspects-poc-v2.aspect-bundle | snap ack /dev/stdin
 
 
 # Install the snaps

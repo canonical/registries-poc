@@ -163,31 +163,27 @@ $ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/aspects-poc-v2/setup-metrics -d
 You can check the state of the network by running:
 
 ```console
-$ snap logs aspects-poc-reporting -n 30
-systemd[1]: Starting snap.aspects-poc-reporting.daemon.service - Service for snap application aspects-poc-reporting.daemon...
-aspects-poc-reporting.daemon[245090]: The network stats are:
-aspects-poc-reporting.daemon[245090]:         {'device-id': 'e4b16d03-f2f9-4d0a-bf03-b197e554b44f',
-aspects-poc-reporting.daemon[245090]:          'packets-sent': {'eth0': 673, 'wlan0': 629},
-aspects-poc-reporting.daemon[245090]:          'tunnel-peers': ['10.242.181.171',
-aspects-poc-reporting.daemon[245090]:                           '192.168.60.29',
-aspects-poc-reporting.daemon[245090]:                           '192.168.21.5',
-aspects-poc-reporting.daemon[245090]:                           '192.168.224.131',
-aspects-poc-reporting.daemon[245090]:                           '192.168.143.254',
-aspects-poc-reporting.daemon[245090]:                           '172.27.234.109']}
-systemd[1]: snap.aspects-poc-reporting.daemon.service: Deactivated successfully.
-systemd[1]: Finished snap.aspects-poc-reporting.daemon.service - Service for snap application aspects-poc-reporting.daemon.
-systemd[1]: Starting snap.aspects-poc-reporting.daemon.service - Service for snap application aspects-poc-reporting.daemon...
-aspects-poc-reporting.daemon[247606]: The network stats are:
-aspects-poc-reporting.daemon[247606]:         {'device-id': 'e4b16d03-f2f9-4d0a-bf03-b197e554b44f',
-aspects-poc-reporting.daemon[247606]:          'packets-sent': {'eth0': 680, 'wlan0': 639},
-aspects-poc-reporting.daemon[247606]:          'tunnel-peers': ['10.242.181.171',
-aspects-poc-reporting.daemon[247606]:                           '192.168.60.29',
-aspects-poc-reporting.daemon[247606]:                           '192.168.21.5',
-aspects-poc-reporting.daemon[247606]:                           '192.168.224.131',
-aspects-poc-reporting.daemon[247606]:                           '192.168.143.254',
-aspects-poc-reporting.daemon[247606]:                           '172.27.234.109']}
-systemd[1]: snap.aspects-poc-reporting.daemon.service: Deactivated successfully.
-systemd[1]: Finished snap.aspects-poc-reporting.daemon.service - Service for snap application aspects-poc-reporting.daemon.
+$ snap logs aspects-poc-reporting -n 25
+aspects-poc-reporting.daemon[115359]: INFO:root:The network stats are:
+aspects-poc-reporting.daemon[115359]: INFO:root:      {'device-id': 'e4b16d03-f2f9-4d0a-bf03-b197e554b44f',
+aspects-poc-reporting.daemon[115359]:          'packets-sent': {'eth0': 14726, 'wlan0': 14622},
+aspects-poc-reporting.daemon[115359]:          'tunnel-peers': ['192.168.8.222',
+aspects-poc-reporting.daemon[115359]:                           '10.111.253.43',
+aspects-poc-reporting.daemon[115359]:                           '192.168.238.119',
+aspects-poc-reporting.daemon[115359]:                           '10.4.253.14',
+aspects-poc-reporting.daemon[115359]:                           '172.29.156.22',
+aspects-poc-reporting.daemon[115359]:                           '192.168.224.107',
+aspects-poc-reporting.daemon[115359]:                           '172.24.203.95',
+aspects-poc-reporting.daemon[115359]:                           '10.118.205.223',
+aspects-poc-reporting.daemon[115359]:                           '192.168.203.67',
+aspects-poc-reporting.daemon[115359]:                           '172.18.46.79',
+aspects-poc-reporting.daemon[115359]:                           '10.251.199.190',
+aspects-poc-reporting.daemon[115359]:                           '10.217.171.216',
+aspects-poc-reporting.daemon[115359]:                           '10.178.157.168',
+aspects-poc-reporting.daemon[115359]:                           '172.28.76.107',
+aspects-poc-reporting.daemon[115359]:                           '172.28.194.132',
+aspects-poc-reporting.daemon[115359]:                           '192.168.122.66']}
+aspects-poc-reporting.daemon[115359]: INFO:root:Next run in 30.00 seconds
 ```
 
 ## Server API documentation
@@ -203,7 +199,7 @@ Make sure you've installed the PoC using the installation script above to make s
 Run `make` or `make all` to build all snaps at once or run the following commands to build them individually:
 
 ```console
-$ make controller
+$ make control
 Building control snap...
 Generated snap metadata
 Created snap package aspects-poc-control_0.1_amd64.snap

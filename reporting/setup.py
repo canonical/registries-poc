@@ -5,6 +5,6 @@ setup(
     python_requires=">=3.10",
     packages=["src"],
     entry_points={
-        "console_scripts": ["reporter-cli=src.reporter:collect"],
+        "console_scripts": ["reporter-cli=src.reporter:main"],
     },
 )
