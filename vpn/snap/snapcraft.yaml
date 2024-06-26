@@ -1,8 +1,8 @@
 name: aspects-poc-vpn
 base: core22
-version: "0.1"
+version: "0.2"
 license: GPL-2.0-only
-summary: Snap that consumes aspects config.
+summary: Snap that consumes registry config.
 description: |
   This snap is functionally empty, it only watches for changes in
   the config and logs them out to stdout.

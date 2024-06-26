@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name="aspects-control",
+    name="control",
     python_requires=">=3.10",
     install_requires=[
         "snap-http==1.4.0",

@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name="aspects-server",
+    name="server",
     python_requires=">=3.10",
     install_requires=[
         "fastapi==0.110.0",

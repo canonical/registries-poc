@@ -1,15 +1,65 @@
-type: aspect-bundle
+type: registry
 authority-id: f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN
 account-id: f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN
-name: aspects-poc-v2
-aspects:
-  observe-tunnel:
+name: network
+timestamp: 2024-04-11T08:24:00Z
+views:
+  control-device:
     rules:
       -
-        access: read
+        access: write
+        request: id
+        storage: device.uuid
+      -
+        access: write
+        request: registered
+        storage: device.registered
+      -
+        access: read-write
+        request: server-url
+        storage: device.server-url
+  control-interfaces:
+    rules:
+      -
+        content:
+          -
+            request: interface-type
+            storage: interface-type
+          -
+            request: ip-address
+            storage: ip-address
+        request: config.{name}
+        storage: interfaces.{name}.config
+      -
+        request: stats.{name}
+        storage: interfaces.{name}.stats
+  control-telemetry:
+    rules:
+      -
+        request: sample-rate
+        storage: metrics.sample-rate
+      -
+        request: monitor-packets-sent
+        storage: metrics.collect.packets-sent
+      -
+        request: monitor-packets-received
+        storage: metrics.collect.packets-received
+      -
+        request: monitor-peers
+        storage: metrics.collect.peers
+  control-tunnel:
+    rules:
+      -
+        request: interface
+        storage: tunnel.interface
+      -
+        access: write
+        request: secret-key
+        storage: tunnel.secret-key
+      -
         request: peers
         storage: tunnel.peers
-  read-device:
+  observe-device:
     rules:
       -
         access: read
@@ -19,7 +69,7 @@ aspects:
         access: read
         request: registered
         storage: device.registered
-  read-interfaces:
+  observe-interfaces:
     rules:
       -
         access: read
@@ -37,63 +87,13 @@ aspects:
         access: read
         request: eth0
         storage: interfaces.eth0
-  setup-device:
+  observe-tunnel:
     rules:
       -
-        access: write
-        request: id
-        storage: device.uuid
-      -
-        access: write
-        request: registered
-        storage: device.registered
-      -
-        access: read-write
-        request: server-url
-        storage: device.server-url
-  setup-metrics:
-    rules:
-      -
-        request: sample-rate
-        storage: metrics.sample-rate
-      -
-        request: monitor-packets-sent
-        storage: metrics.collect.packets-sent
-      -
-        request: monitor-packets-received
-        storage: metrics.collect.packets-received
-      -
-        request: monitor-peers
-        storage: metrics.collect.peers
-  setup-tunnel:
-    rules:
-      -
-        request: interface
-        storage: tunnel.interface
-      -
-        access: write
-        request: secret-key
-        storage: tunnel.secret-key
-      -
+        access: read
         request: peers
         storage: tunnel.peers
-  write-interfaces:
-    rules:
-      -
-        content:
-          -
-            request: interface-type
-            storage: interface-type
-          -
-            request: ip-address
-            storage: ip-address
-        request: config.{name}
-        storage: interfaces.{name}
-      -
-        request: stats.{name}
-        storage: interfaces.{name}.stats
-timestamp: 2024-04-11T08:24:00Z
-body-length: 1983
+body-length: 2071
 sign-key-sha3-384: xkd_Y2ay5N2Uo14v_wsCtfVJYLAVbJgxbiKM8Ne4mZBflaROriZgk2nb5i9Oebum
 
 {
@@ -151,8 +151,12 @@ sign-key-sha3-384: xkd_Y2ay5N2Uo14v_wsCtfVJYLAVbJgxbiKM8Ne4mZBflaROriZgk2nb5i9Oe
         "type": "map",
         "values": {
           "schema": {
-            "interface-type": "$interface-type",
-            "ip-address": "$ip",
+            "config": {
+              "schema": {
+                "interface-type": "$interface-type",
+                "ip-address": "$ip"
+              }
+            },
             "stats": {
               "schema": {
                 "n-received": "$uint",
@@ -189,13 +193,13 @@ sign-key-sha3-384: xkd_Y2ay5N2Uo14v_wsCtfVJYLAVbJgxbiKM8Ne4mZBflaROriZgk2nb5i9Oe
   }
 }
 
-AcLBcwQAAQoAHRYhBHCftZeyXSJlNBvC+h+HHdMBlPLtBQJmIMc3AAoJEB+HHdMBlPLtcREP/jhj
-UCqoxhwHuK+lSVQwKssxjch3N0mtn/OPjlH1XxudiQqH5Mu+7KPcBOnXNihh7yCWalXu0Z9uaQ8e
-A+TSPN82LQcg0Y69u37eB/AsJ4sTWapYUwRXjs9iiYLrMeiljX9J+lA5l8XYQcDejttwU/eQjMZ7
-A6tBc4GNmza3hgvwZSRSjFNHdQb2q3aXGCnTtgyme5CDPcLgCKqygf8eoj/YlUXb5udMO0FDEu1Z
-qdfeowADjAL0vhWpzq78p2dmckg8c4h+afYK+Z1beAbwNBaoqTeJZWXZCl4TeevWp/JxIveBMJ2G
-dcR3364gre6YYwojdyQVxLR345swWILPcGDViyJDNwykCl1/ASlxX1nyfRIAAtyQb8GFBuFppAlC
-S1/Z92UZxZLMvYYhF2Z7+DozU6XUWyJRk0e/OrrvzO8e5GTjYTDFqzARciBYFcOTQTKBTDXEVONE
-QK3631aE4XWp52WvWL4+SwvM0BdpmF4Ju5jnbu8UfGLWi2NAdy+r8WXQ5dusV1LxVazj1SfkX5Sg
-uw8Ia8f3ZBmoF4Opnva5Efa6o0vQNIiU0Qh+OkaycbKiZaOj4NVYF6DsiLtDA1W7u3qBq1990OKn
-r3tanrbyvITn28GxiMH8DKMq2fOHtus1nf6uH1S8/UUaBv6SGqpWWYj8o1RYqivaURK2jJSq
+AcLBcwQAAQoAHRYhBHCftZeyXSJlNBvC+h+HHdMBlPLtBQJmfAdjAAoJEB+HHdMBlPLt2okP/2PN
+9FXxIVaPmmBdj1PefklAn72hSkZyhZHc6UnSJFmCjVo6jpNt7y7kJeV6P274UD9ldGoiO4Ecb4Y6
+m0ZIjPsa9EPm23Zl6LrlhCTDjTn75uShKh4dt67BP1ws0ZM/W+mwWh/vY/4AElrPUrZzvvCy/sT+
+NexglFeuINbnYffacsze4MKSOOR0rhuX3myqjlR5X/BZfe/+NV2mazOJXzWQ0Wsl/7zaj1wpPC55
+Iu1f65FBe282IDmWA87jE8fZABuMrTWP+gJZXUr2xNH7T9CpIv8rbMVcmhX+dVb3E0hHl9DKCgtA
+Oq4uDYtm2L20vCv4/O2vCmxWNSxa3/ZJeDhb2egB38iygE4F+NsTXe4587vXpIGNGEaph9tMiF7O
+FIF5JPG5avBJIN6B0wryNrxAbZvRVTc0hK3fuSmuVSX06b/XMBUelidlAnENbT2gFYGmH/nKkZV0
+VUqDuiBhb0Gl6ci8aS44jbQkxv/1FHh+NRjROpdMKjtz+aLWvO9aZegJf6JHHaTo/Vo8/1BXsZPL
+lTUI4Sy3pHd4H8EkRB5HbrGioXIs7Vg+6PkVJKx/SXQhcYDIH86sY7V0HyFUzS0MfovhDLjtunLE
+sl8XpogHgVxrDYPO3kRtO1x1LV66dSSirJFeNRNAJhyCIo43NoR9NrQwEJqikJSSViF7D7kr

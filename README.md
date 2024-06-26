@@ -1,6 +1,6 @@
-# Aspects PoC
+# Registries PoC
 
-A proof of concept for snap configuration sharing across snaps using snapd's aspects.
+A proof of concept for snap configuration sharing across snaps using snapd's configuration registries.
 
 <img src="assets/img/design.png" />
 
@@ -9,7 +9,7 @@ A proof of concept for snap configuration sharing across snaps using snapd's asp
 To install this PoC, simply run the installation script:
 
 ```console
-$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/canonical/aspects-poc/main/install.sh)"
+$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/canonical/registries-poc/main/install.sh)"
 // TODO: update after the new snap names are approved by the Store
 ```
 
@@ -19,52 +19,44 @@ Make sure that you've installed the PoC using the installation script above. The
 
 ### The control snap
 
-Everything shouuld run automatically and the `control` snap should contact the server for registration. Once registered, the `read-device` aspect should look like this:
+Everything shouuld run automatically and the `control` snap should contact the server for registration. Once registered, the `observe-device` registry view should look like this:
 
 ```console
-$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/aspects-poc-v2/read-device -d
+$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/network/observe-device -d
 {
-        "registered": 1713762729,
-        "uuid": "e4b16d03-f2f9-4d0a-bf03-b197e554b44f"
+        "registered": 1719407517,
+        "uuid": "ca155b32-2472-4650-afb0-c6f967328afe"
 }
 ```
 
 The `control` snap will also set the device's default configuration during its initial installation:
 
 ```console
-$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/aspects-poc-v2/write-interfaces config -d
+$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/network/control-interfaces config -d
 {
         "config": {
                 "eth0": {
                         "interface-type": "ethernet",
-                        "ip-address": "172.16.0.3",
-                        "stats": {
-                                "n-received": 0,
-                                "n-sent": 0
-                        }
+                        "ip-address": "172.16.0.3"
                 },
                 "wlan0": {
                         "interface-type": "wifi",
-                        "ip-address": "192.168.0.104",
-                        "stats": {
-                                "n-received": 0,
-                                "n-sent": 0
-                        }
+                        "ip-address": "192.168.0.104"
                 }
         }
 }
 
-$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/aspects-poc-v2/setup-tunnel -d
+$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/network/control-tunnel -d
 {
         "interface": "eth0",
         "peers": [
                 "192.168.21.3",
-                "192.168.21.5",
+                "192.168.151.225",
                 "192.168.21.7"
         ]
 }
 
-$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/aspects-poc-v2/setup-metrics -d
+$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/network/control-telemetry -d
 {
         "monitor-packets-received": false,
         "monitor-packets-sent": true,
@@ -72,7 +64,7 @@ $ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/aspects-poc-v2/setup-metrics -d
         "sample-rate": 2
 }
 
-$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/aspects-poc-v2/setup-device -d
+$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/network/control-device -d
 {
         "server-url": "http://127.0.0.1:8000"
 }
@@ -83,29 +75,29 @@ From then on, the `control` snap will run every minute and simulate packet flow 
 ```console
 $ snap logs aspects-poc-control
 systemd[1]: Starting snap.aspects-poc-control.daemon.service - Service for snap application aspects-poc-control.daemon...
-aspects-poc-control.daemon[188483]: eth0: 9 packets ↑, 10 packets ↓
-aspects-poc-control.daemon[188483]: wlan0: 6 packets ↑, 5 packets ↓
+aspects-poc-control.daemon[409009]: eth0: 9 packets ↑, 1 packets ↓
+aspects-poc-control.daemon[409009]: wlan0: 5 packets ↑, 4 packets ↓
 systemd[1]: snap.aspects-poc-control.daemon.service: Deactivated successfully.
 systemd[1]: Finished snap.aspects-poc-control.daemon.service - Service for snap application aspects-poc-control.daemon.
 systemd[1]: Starting snap.aspects-poc-control.daemon.service - Service for snap application aspects-poc-control.daemon...
-aspects-poc-control.daemon[190367]: eth0: 10 packets ↑, 1 packets ↓
-aspects-poc-control.daemon[190367]: wlan0: 2 packets ↑, 6 packets ↓
+aspects-poc-control.daemon[410059]: eth0: 7 packets ↑, 4 packets ↓
+aspects-poc-control.daemon[410059]: wlan0: 2 packets ↑, 4 packets ↓
 systemd[1]: snap.aspects-poc-control.daemon.service: Deactivated successfully.
-systemd[1]: Finished snap.aspects-poc-control.daemon.service - Service for snap application aspects-poc-control.daemon
+systemd[1]: Finished snap.aspects-poc-control.daemon.service - Service for snap application aspects-poc-control.daemon.
 ```
 
 You can confirm these updates by running:
 
 ```console
-$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/aspects-poc-v2/read-interfaces packets-received
+$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/network/observe-interfaces packets-received
 Key                     Value
-packets-received.eth0   688
-packets-received.wlan0  607
+packets-received.eth0   127
+packets-received.wlan0  148
 
-$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/aspects-poc-v2/read-interfaces packets-sent
+$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/network/observe-interfaces packets-sent
 Key                 Value
-packets-sent.eth0   657
-packets-sent.wlan0  616
+packets-sent.eth0   130
+packets-sent.wlan0  131
 ```
 
 ### The vpn snap
@@ -116,42 +108,35 @@ You can confirm this by checking the snap's daemon:
 
 ```console
 $ snap logs aspects-poc-vpn
-systemd[1]: Starting snap.aspects-poc-vpn.daemon.service - Service for snap application aspects-poc-vpn.daemon...
-aspects-poc-vpn.daemon[169122]: Peer node 192.168.13.118 dropped.
 systemd[1]: snap.aspects-poc-vpn.daemon.service: Deactivated successfully.
 systemd[1]: Finished snap.aspects-poc-vpn.daemon.service - Service for snap application aspects-poc-vpn.daemon.
 systemd[1]: Starting snap.aspects-poc-vpn.daemon.service - Service for snap application aspects-poc-vpn.daemon...
-aspects-poc-vpn.daemon[170146]: Peer node 10.242.181.171 joined.
+aspects-poc-vpn.daemon[412358]: No changes to tunnel.
 systemd[1]: snap.aspects-poc-vpn.daemon.service: Deactivated successfully.
 systemd[1]: Finished snap.aspects-poc-vpn.daemon.service - Service for snap application aspects-poc-vpn.daemon.
 systemd[1]: Starting snap.aspects-poc-vpn.daemon.service - Service for snap application aspects-poc-vpn.daemon...
-aspects-poc-vpn.daemon[171428]: No changes to tunnel.
+aspects-poc-vpn.daemon[413769]: No changes to tunnel.
 systemd[1]: snap.aspects-poc-vpn.daemon.service: Deactivated successfully.
 systemd[1]: Finished snap.aspects-poc-vpn.daemon.service - Service for snap application aspects-poc-vpn.daemon.
 ```
 
-You can also check `observe-tunnel` aspect to see the current peers:
+You can also check `observe-tunnel` registry view to see the current peers:
 
 ```console
-$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/aspects-poc-v2/observe-tunnel peers
+$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/network/observe-tunnel peers
 [
-        "10.242.181.171",
-        "172.27.234.109",
-        "192.168.21.5",
-        "10.71.35.212",
-        "10.95.234.204",
-        "192.168.224.131",
-        "192.168.60.29",
-        "192.168.184.107"
+        "192.168.21.3",
+        "192.168.151.225",
+        "192.168.21.7"
 ]
 ```
 
 ### The reporting snap
 
-The `reporting` snap has a service that runs every minute to collect metrics on the current state of the network. The metrics collected are controlled by the `setup-metrics` aspect:
+The `reporting` snap has a service that runs every minute to collect metrics on the current state of the network. The metrics collected are controlled by the `control-metrics` registry view:
 
 ```console
-$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/aspects-poc-v2/setup-metrics -d
+$ snap get f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN/network/control-telemetry -d
 {
         "monitor-packets-received": false,
         "monitor-packets-sent": true,
@@ -164,31 +149,36 @@ You can check the state of the network by running:
 
 ```console
 $ snap logs aspects-poc-reporting -n 25
-aspects-poc-reporting.daemon[115359]: INFO:root:The network stats are:
-aspects-poc-reporting.daemon[115359]: INFO:root:      {'device-id': 'e4b16d03-f2f9-4d0a-bf03-b197e554b44f',
-aspects-poc-reporting.daemon[115359]:          'packets-sent': {'eth0': 14726, 'wlan0': 14622},
-aspects-poc-reporting.daemon[115359]:          'tunnel-peers': ['192.168.8.222',
-aspects-poc-reporting.daemon[115359]:                           '10.111.253.43',
-aspects-poc-reporting.daemon[115359]:                           '192.168.238.119',
-aspects-poc-reporting.daemon[115359]:                           '10.4.253.14',
-aspects-poc-reporting.daemon[115359]:                           '172.29.156.22',
-aspects-poc-reporting.daemon[115359]:                           '192.168.224.107',
-aspects-poc-reporting.daemon[115359]:                           '172.24.203.95',
-aspects-poc-reporting.daemon[115359]:                           '10.118.205.223',
-aspects-poc-reporting.daemon[115359]:                           '192.168.203.67',
-aspects-poc-reporting.daemon[115359]:                           '172.18.46.79',
-aspects-poc-reporting.daemon[115359]:                           '10.251.199.190',
-aspects-poc-reporting.daemon[115359]:                           '10.217.171.216',
-aspects-poc-reporting.daemon[115359]:                           '10.178.157.168',
-aspects-poc-reporting.daemon[115359]:                           '172.28.76.107',
-aspects-poc-reporting.daemon[115359]:                           '172.28.194.132',
-aspects-poc-reporting.daemon[115359]:                           '192.168.122.66']}
-aspects-poc-reporting.daemon[115359]: INFO:root:Next run in 30.00 seconds
+aspects-poc-reporting.daemon[389998]: INFO:root:The network stats are:
+aspects-poc-reporting.daemon[389998]: INFO:root:      {'device-id': 'ca155b32-2472-4650-afb0-c6f967328afe',
+aspects-poc-reporting.daemon[389998]:          'packets-sent': {'eth0': 137, 'wlan0': 141},
+aspects-poc-reporting.daemon[389998]:          'tunnel-peers': ['192.168.21.3', '192.168.151.225', '192.168.21.7']}
+aspects-poc-reporting.daemon[389998]: INFO:root:Next run in 30.00 seconds
+aspects-poc-reporting.daemon[389998]: INFO:root:The network stats are:
+aspects-poc-reporting.daemon[389998]: INFO:root:      {'device-id': 'ca155b32-2472-4650-afb0-c6f967328afe',
+aspects-poc-reporting.daemon[389998]:          'packets-sent': {'eth0': 137, 'wlan0': 141},
+aspects-poc-reporting.daemon[389998]:          'tunnel-peers': ['192.168.21.3', '192.168.151.225', '192.168.21.7']}
+aspects-poc-reporting.daemon[389998]: INFO:root:Next run in 30.00 seconds
+aspects-poc-reporting.daemon[389998]: INFO:root:The network stats are:
+aspects-poc-reporting.daemon[389998]: INFO:root:      {'device-id': 'ca155b32-2472-4650-afb0-c6f967328afe',
+aspects-poc-reporting.daemon[389998]:          'packets-sent': {'eth0': 138, 'wlan0': 150},
+aspects-poc-reporting.daemon[389998]:          'tunnel-peers': ['192.168.21.3', '192.168.151.225', '192.168.21.7']}
+aspects-poc-reporting.daemon[389998]: INFO:root:Next run in 30.00 seconds
+aspects-poc-reporting.daemon[389998]: INFO:root:The network stats are:
+aspects-poc-reporting.daemon[389998]: INFO:root:      {'device-id': 'ca155b32-2472-4650-afb0-c6f967328afe',
+aspects-poc-reporting.daemon[389998]:          'packets-sent': {'eth0': 138, 'wlan0': 150},
+aspects-poc-reporting.daemon[389998]:          'tunnel-peers': ['192.168.21.3', '192.168.151.225', '192.168.21.7']}
+aspects-poc-reporting.daemon[389998]: INFO:root:Next run in 30.00 seconds
+aspects-poc-reporting.daemon[389998]: INFO:root:The network stats are:
+aspects-poc-reporting.daemon[389998]: INFO:root:      {'device-id': 'ca155b32-2472-4650-afb0-c6f967328afe',
+aspects-poc-reporting.daemon[389998]:          'packets-sent': {'eth0': 145, 'wlan0': 154},
+aspects-poc-reporting.daemon[389998]:          'tunnel-peers': ['192.168.21.3', '192.168.151.225', '192.168.21.7']}
+aspects-poc-reporting.daemon[389998]: INFO:root:Next run in 30.00 seconds
 ```
 
 ## Server API documentation
 
-While the server is running (corresponding snap has been installed), documentation is available at [127.0.0.1:8000/docs](127.0.0.1:8000/docs).
+While the server is running (corresponding snap has been installed), documentation is available at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
 
 ## Development
 
@@ -202,27 +192,27 @@ Run `make` or `make all` to build all snaps at once or run the following command
 $ make control
 Building control snap...
 Generated snap metadata
-Created snap package aspects-poc-control_0.1_amd64.snap
+Created snap package aspects-poc-control_0.2_amd64.snap
 
 $ make reporting
 Building reporting snap...
 Generated snap metadata
-Created snap package aspects-poc-reporting_0.1_amd64.snap
+Created snap package aspects-poc-reporting_0.2_amd64.snap
 
 $ make server
 Building server snap...
 Generated snap metadata
-Created snap package aspects-poc-server_0.1_amd64.snap
+Created snap package aspects-poc-server_0.2_amd64.snap
 
 $ make vpn
 Building vpn snap...
 Generated snap metadata
-Created snap package aspects-poc-vpn_0.1_amd64.snap
+Created snap package aspects-poc-vpn_0.2_amd64.snap
 ```
 
 ### Installing the snaps
 
-To use the make targets below, make sure you have [yq](https://github.com/mikefarah/yq) installed. You can install it using [Homebrew](https://brew.sh/) or as a snap:
+To use the make targets below, make sure you have [yq](https://github.com/mikefarah/yq) installed. You can install it using [Homebrew](https://brew.sh/) or as a [snap](https://snapcraft.io/yq):
 
 ```console
 $ brew install yq
@@ -234,17 +224,17 @@ Run `make install-all` to install all the snaps at once or run the following com
 ```console
 $ make install-server
 Installing server snap...
-aspects-poc-server 0.1 installed
+aspects-poc-server 0.2 installed
 
 $ make install-control
 Installing control snap...
-aspects-poc-control 0.1 installed
+aspects-poc-control 0.2 installed
 
 $ make install-vpn
 Installing vpn snap...
-aspects-poc-vpn 0.1 installed
+aspects-poc-vpn 0.2 installed
 
 $ make install-reporting
 Installing reporting snap...
-aspects-poc-reporting 0.1 installed
+aspects-poc-reporting 0.2 installed
 ```

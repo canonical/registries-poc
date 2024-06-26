@@ -1,10 +1,13 @@
 from random import randint
 
-from src.aspects import get_aspect, set_aspect
+from src.registries import get_registry_value, set_registry_value
 
 
 def beat() -> None:
-    interfaces = get_aspect("write-interfaces", fields=["stats"])["stats"]
+    interfaces = get_registry_value(
+        "control-interfaces",
+        fields=["stats"],
+    )["stats"]
 
     for interface in interfaces.keys():
         # simulate packet flow
@@ -14,4 +17,7 @@ def beat() -> None:
 
         print(f"{interface}: {up} packets ↑, {down} packets ↓")
 
-    set_aspect("write-interfaces", {"stats": interfaces})
+    set_registry_value(
+        "control-interfaces",
+        {"stats": interfaces},
+    )
