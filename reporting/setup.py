@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name="aspects-poc-reporting",
+    name="reporting",
     python_requires=">=3.10",
     packages=["src"],
     entry_points={

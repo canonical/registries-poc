@@ -1,8 +1,8 @@
 name: aspects-poc-control
 base: core22
-version: "0.1"
+version: "0.2"
 license: GPL-2.0-only
-summary: Snap that pulls and applies aspects config.
+summary: Snap that pulls and applies registry config.
 description: |
   This snap syncs with the registration server to register
   devices and sync configuration.

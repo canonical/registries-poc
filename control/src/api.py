@@ -2,7 +2,7 @@ from typing import Optional
 
 import requests
 
-from src.aspects import set_aspect
+from src.registries import set_registry_value
 from src.device import generate_keys, get_architecture, get_ip_address
 
 
@@ -40,8 +40,8 @@ def register(base_url: str) -> None:
     )
     result = response.json()
 
-    set_aspect(
-        "setup-device",
+    set_registry_value(
+        "control-device",
         {
             "id": result["uuid"],
             "registered": result["registered"],

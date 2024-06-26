@@ -4,8 +4,8 @@ from typing import Any, Optional
 from snap_http.http import get, put, SnapdHttpException
 
 
-def get_aspect(name: str, *, fields: Optional[list[str]] = None) -> dict:
-    """Get the aspect values (or a subset)."""
+def get_registry_value(name: str, *, fields: Optional[list[str]] = None) -> dict:
+    """Get the registry values (or a subset)."""
     query_params = {}
     if fields:
         query_params["fields"] = ",".join(fields)
@@ -13,7 +13,7 @@ def get_aspect(name: str, *, fields: Optional[list[str]] = None) -> dict:
     try:
         account_id = os.environ["ACCOUNT_ID"]
         response = get(
-            f"/aspects/{account_id}/aspects-poc-v2/{name}",
+            f"/registry/{account_id}/network/{name}",
             query_params=query_params,
         )
         return response.result
@@ -22,13 +22,13 @@ def get_aspect(name: str, *, fields: Optional[list[str]] = None) -> dict:
         return {}
 
 
-def set_aspect(
+def set_registry_value(
     name: str,
     value: dict[str, Any],
 ) -> None:
-    """Set the aspect values."""
+    """Set the registry values."""
     account_id = os.environ["ACCOUNT_ID"]
     put(
-        f"/aspects/{account_id}/aspects-poc-v2/{name}",
+        f"/registry/{account_id}/network/{name}",
         value,
     )

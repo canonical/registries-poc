@@ -1,6 +1,6 @@
 name: aspects-poc-server
 base: core22
-version: "0.1"
+version: "0.2"
 license: GPL-2.0-only
 summary: Server that can register devices and manage their config.
 description: |

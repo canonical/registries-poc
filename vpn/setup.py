@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name="aspects-poc-vpn",
+    name="vpn",
     python_requires=">=3.10",
     install_requires=[
         "snap-http==1.4.0",
