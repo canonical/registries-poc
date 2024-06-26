@@ -18,7 +18,7 @@ def get_registry_value(name: str, *, fields: Optional[list[str]] = None) -> dict
         )
         return response.result
     except SnapdHttpException:
-        # the aspect is empty
+        # the registry view.path... is empty
         return {}
 
 
