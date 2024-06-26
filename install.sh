@@ -16,7 +16,7 @@ snap known --remote account account-id=$ACCOUNT_ID | snap ack /dev/stdin
 echo "Acknowledging account-key/$SIGNING_PUBLIC_KEY assertion..."
 snap known --remote account-key public-key-sha3-384=$SIGNING_PUBLIC_KEY | snap ack /dev/stdin
 
-echo "Acknowledging network.registry assertion..."
+echo "Acknowledging network-registry.assert assertion..."
 curl -fsSL https://raw.githubusercontent.com/canonical/registries-poc/main/network-registry.assert | snap ack /dev/stdin
 
 

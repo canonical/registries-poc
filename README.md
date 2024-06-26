@@ -2,7 +2,7 @@
 
 A proof of concept for snap configuration sharing across snaps using snapd's configuration registries.
 
-<img src="assets/img/design.png" />
+Please note that the previous name for _registries_ was _aspects_, that's why the snaps have the _aspects_ prefix.
 
 ## Installation
 
@@ -10,7 +10,17 @@ To install this PoC, simply run the installation script:
 
 ```console
 $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/canonical/registries-poc/main/install.sh)"
-// TODO: update after the new snap names are approved by the Store
+Acknowledging account/f22PSauKuNkwQTM9Wz67ZCjNACuSjjhN assertion...
+Acknowledging account-key/xkd_Y2ay5N2Uo14v_wsCtfVJYLAVbJgxbiKM8Ne4mZBflaROriZgk2nb5i9Oebum assertion...
+Acknowledging network-registry.assert assertion...
+Installing aspects-poc-server...
+aspects-poc-server (edge) 0.2 from Stephen Mwangi (st3v3nmw) installed
+Installing aspects-poc-control...
+aspects-poc-control (edge) 0.2 from Stephen Mwangi (st3v3nmw) installed
+Installing aspects-poc-vpn...
+aspects-poc-vpn (edge) 0.2 from Stephen Mwangi (st3v3nmw) installed
+Installing aspects-poc-reporting...
+aspects-poc-reporting (edge) 0.2 from Stephen Mwangi (st3v3nmw) installed
 ```
 
 ## Running the demo
@@ -182,7 +192,7 @@ While the server is running (corresponding snap has been installed), documentati
 
 ## Development
 
-Make sure you've installed the PoC using the installation script above to make sure that all assertions are acknowledged and experimental features like aspects are turned on.
+Make sure you've installed the PoC using the installation script above to make sure that all assertions are acknowledged and experimental features like registries are turned on.
 
 ### Building the snaps
 
